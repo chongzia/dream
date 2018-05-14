@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {include file="public/head"/}
+    <title></title>
+</head>
+<body>
+    <header class="container">
+        {include file="public/header"/}
+    </header>
+    <article class="container mt-2">
+        <!-- 单页函数块导航栏部分 -->
+        <div class="row">
+            <div class="col-3">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    {volist name="classinfo.functionname" id="vo"}
+                        {if condition="$functioninfo.functionname eq $vo"}
+                            <a class="nav-link active" href="{:url($vo)}">{$vo}</a>
+                        {else /}
+                            <a class="nav-link" href="{:url($vo)}">{$vo}</a>
+                        {/if}
+                    {/volist}
+                </div>
+            </div>
+
+            <div class="col-9">
+                <h3>接口信息</h3>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="row">接口名称：{$functioninfo.need['@title']}</th>
+                            <th>接口版本：{$functioninfo.need['@version']}</th>
+                            <th scope="row">作者：{$functioninfo.need['@author']}</th>
+                            <th class="text-right">建立日期：{$functioninfo.need['@date']}</th>
+                        </tr>
+                        <tr>
+                            <th>请求方式</th>
+                            <th>家族属性</th>
+                            <th class="text-right">是否静态</th>
+                            <th class="text-right">是否最终</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{$functioninfo.need['@request']}</td>
+                            <td>{$functioninfo['family']}</td>
+                            <td>{$functioninfo['static']}</td>
+                            <td>{$functioninfo['final']}</td>
+                        </tr>
+                        <tr><th colspan="4">api地址：{$functioninfo.need['@api']}</th></tr>
+                        <tr><th colspan="4">描述：{$functioninfo.need['@describe']}</th></tr>
+                        <tr>
+                            <th colspan="3"></th>
+                            <th class="text-right"></th>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>请求设置</h3>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>类型</th>
+                            <th>是否请求</th>
+                            <th >描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="functioninfo['@param']" id="vo"}
+                            <tr>
+                                <td>{$vo.var}</td>
+                                <td>{$vo.type}</td>
+                                <td>{$vo.mast}</td>
+                                <td>{$vo.describe}</td>
+                            </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+                <h3>结果返回</h3>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>类型</th>
+                            <th>描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="functioninfo['@return']" id="vo"}
+                            <tr>
+                                <td>{$vo.var}</td>
+                                <td>{$vo.type}</td>
+                                <td>{$vo.describe}</td>
+                            </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </article>
+    <footer>
+        {include file="public/footer"/}
+    </footer>
+
+</body>
+</html>

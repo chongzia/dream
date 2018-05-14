@@ -1,0 +1,30 @@
+<!-- Api文档信息部分 -->
+<div class="jumbotron jumbotron-fluid m-0">
+    <div class="container">
+        <h1 class="display-4">{:config('apidoc.title')}</h1>
+        <p class="lead">{:config('apidoc.info')}</p>
+        <p class="lead">{:config('apidoc.version')}</p>
+    </div>
+</div>
+<?php $menu = config('apidoc.menu')?>
+<!-- api固定信息链接部分 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{:url('api/Index/index')}">API文档</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            {foreach name="menu" key="key" item="val"}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="webpublic" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{$key}</a>
+                <div class="dropdown-menu" aria-labelledby="webpublic">
+                    {foreach name="val" key="k" item="v"}
+                    <a class="dropdown-item" href="{:url($v.url)}">{$k}</a>
+                    {/foreach}
+                </div>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+</nav>

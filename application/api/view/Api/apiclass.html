@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {include file="public/head"/}
+    <title></title>
+</head>
+<body>
+    <header class="container">
+        {include file="public/header"/}
+    </header>
+    <article class="container mt-2">
+        <!-- 单页函数块导航栏部分 -->
+        <div class="row">
+            <div class="col-3">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link" href="{:url($classinfo.classhttpurl)}">{$classinfo.classshowname}模块</a>
+                    {volist name="classinfo.functionname" id="vo"}
+                        <a class="nav-link" href="{:url($vo)}">{$vo}</a>
+                    {/volist}
+                </div>
+            </div>
+            <div class="col-9">
+                {if condition="$classinfo['error'] eq null"}
+                {else /}
+                <h3>可能的错误格式</h3>
+                <table class="table table-hover mb-5">
+                    <tbody>
+                        {foreach name="classinfo['error']" key="key" item="val"}
+                            <tr>
+                                <td>{$key}：{$val}</td>
+                            </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+                {/if}
+                <h3>文件信息</h3>
+                <table class="table table-hover mb-5">
+                    <tbody>
+                        <tr>
+                            <th>命名空间：{$classinfo['classname']}</th>
+                        </tr>
+                        <tr>
+                            <th>文件名：{$classinfo['classfile']}</th>
+                        </tr>
+                        <tr>
+                            <th>路径：{$classinfo['classurl']}</th>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>版本信息</h3>
+                <table class="table table-hover mb-5">
+                    <tbody>
+                        <tr>
+                            <th>名称：{$classinfo.need['@title']}</th>
+                            <th>版本：{$classinfo.need['@version']}</th>
+                            <th>作者：{$classinfo.need['@author']}</th>
+                            <th>日期：{$classinfo.need['@date']}</th>
+                        </tr>
+                    </tbody>
+                </table>
+                {if condition="$classinfo['standby'] eq null"}
+                {else /}
+                <h3>用户拟定信息</h3>
+                <table class="table table-hover mb-5">
+                    <tbody>
+                        {if condition="$classinfo['standby'] eq null"}
+                            描述信息存在问题
+                        {else /}
+                        {foreach name="classinfo['standby']" key="key" item="val"}
+                            {if condition="$key eq 0"}
+                            <tr>
+                                <th>{$key}：{$val}</th>
+                            </tr>
+                            {else /}
+                            <tr>
+                                <td>{$key}：{$val}</td>
+                            </tr>
+                            {/if}
+                        {/foreach}
+                        {/if}
+                    </tbody>
+                </table>
+                {/if}
+                <h3>功能描述</h3>
+                <table class="table table-hover mb-5">
+                    <tbody>
+                        {if condition="$classinfo['@describe'] eq null"}
+                            描述信息存在问题
+                        {else /}
+                        {foreach name="classinfo['@describe']" key="key" item="val"}
+                            {if condition="$key eq 0"}
+                            <tr>
+                                <th>类说明：{$val}</th>
+                            </tr>
+                            {else /}
+                            <tr>
+                                <td>{$key}：{$val}</td>
+                            </tr>
+                            {/if}
+                        {/foreach}
+                        {/if}
+                    </tbody>
+                </table>
+                <h3>未完成内容</h3>
+                <table class="table table-hover mb-5">
+                    <tbody>
+                        {if condition="$classinfo['@todo'] eq null"}
+                            描述信息存在问题
+                        {else /}
+                        {foreach name="classinfo['@todo']" key="key" item="val"}
+                            {if condition="$key eq 0"}
+                            <tr>
+                                <th>类说明：{$val}</th>
+                            </tr>
+                            {else /}
+                            <tr>
+                                <td>{$key}：{$val}</td>
+                            </tr>
+                            {/if}
+                        {/foreach}
+                        {/if}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </article>
+    <footer>
+        {include file="public/footer"/}
+    </footer>
+
+</body>
+</html>

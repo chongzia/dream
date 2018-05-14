@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {include file="public/head"/}
+    <title></title>
+</head>
+<body>
+    <header class="container">
+        {include file="public/header"/}
+    </header>
+    <article class="container mt-2">
+        <!-- 单页函数块导航栏部分 -->
+        <div class="row">
+            <div class="col-3">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link" href="{:url($classinfo.classhttpurl)}">{$classinfo.classshowname}模块</a>
+                    {volist name="classinfo.functionname" id="vo"}
+                        <a class="nav-link" href="{:url($vo)}">{$vo}</a>
+                    {/volist}
+                </div>
+            </div>
+            <div class="col-9">
+                <h3>接口信息</h3>
+                <table class="table table-hover mb-5">
+                    <tbody>
+                        <tr>
+                            <td colspan="2">接口名称：{$functioninfo.need['@title']}</td>
+                            <td class="text-right">请求方式：{$functioninfo.need['@request']} 请求</td>
+                        </tr>
+                        <tr>
+                            <td>接口版本：{$functioninfo.need['@version']}</td>
+                            <td class="text-right">作者：{$functioninfo.need['@author']}</td>
+                            <td class="text-right">建立日期：{$functioninfo.need['@date']}</td>
+                        </tr>
+                        <tr>
+                            <td>家族属性：{if condition="$functioninfo['family'] eq 'Public'"}{$functioninfo['family']} 公共接口
+                            {else /} 不可访问 {/if}</td>
+                            <td class="text-right">是否静态：{if condition="$functioninfo['static'] eq NULL"} 普通接口
+                            {else /} 静态接口 {/if}</td>
+                            <td class="text-right">是否最终：{$functioninfo['final']}
+                                {if condition="$functioninfo['final'] eq NULL"} 待定版本
+                                {else /} 最终版本 {/if}</td>
+                        </tr>
+                        <tr><th colspan="3">api地址：{$functioninfo.need['@api']}</th></tr>
+                    </tbody>
+                </table>
+                {if condition="isset($functioninfo['standby'])"}
+                <h3>用户拟定信息</h3>
+                <table class="table table-hover mb-5">
+                    <tbody>
+                        {if condition="$functioninfo['standby'] eq null"}
+                            描述信息存在问题
+                        {else /}
+                        {foreach name="functioninfo['standby']" key="key" item="val"}
+                            {if condition="$key eq 0"}
+                            <tr>
+                                <th>{$key}：{$val}</th>
+                            </tr>
+                            {else /}
+                            <tr>
+                                <td>{$key}：{$val}</td>
+                            </tr>
+                            {/if}
+                        {/foreach}
+                        {/if}
+                    </tbody>
+                </table>
+                {else /}
+                {/if}
+                <h3>功能描述</h3>
+                <table class="table table-hover mb-5">
+                    <tbody>
+                        {if condition="$functioninfo['describe'] eq null"}
+                            描述信息存在问题
+                        {else /}
+                        {foreach name="functioninfo['describe']" key="key" item="val"}
+                            {if condition="$key eq 0"}
+                            <tr>
+                                <th>功能说明：{$val}</th>
+                            </tr>
+                            {else /}
+                            <tr>
+                                <td>{$key}：{$val}</td>
+                            </tr>
+                            {/if}
+                        {/foreach}
+                        {/if}
+                    </tbody>
+                </table>
+                <h3>未完成内容</h3>
+                <table class="table table-hover mb-5">
+                    <tbody>
+                        {if condition="$functioninfo['todo'] eq null"}
+                            描述信息存在问题
+                        {else /}
+                        {foreach name="functioninfo['todo']" key="key" item="val"}
+                            {if condition="$key eq 0"}
+                            <tr>
+                                <th>计划说明：{$val}</th>
+                            </tr>
+                            {else /}
+                            <tr>
+                                <td>{$key}：{$val}</td>
+                            </tr>
+                            {/if}
+                        {/foreach}
+                        {/if}
+                    </tbody>
+                </table>
+                <h3>请求设置</h3>
+                <table class="table table-hover mb-5">
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>类型</th>
+                            <th>是否请求</th>
+                            <th >描述</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {volist name="functioninfo['param']" id="vo"}
+                            <tr>
+                                <td>{$vo.var}</td>
+                                <td>{$vo.type}</td>
+                                <td>{$vo.mast}</td>
+                                <td>{$vo.describe}</td>
+                            </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+                <h3>结果返回</h3>
+                <table class="table table-hover mb-5">
+                    <tbody>
+                        {volist name="functioninfo['return']" id="vo"}
+                            <tr>
+                                <th>类型</th>
+                                <th>描述</th>
+                            </tr>
+                            <tr>
+                                <th>{$vo.type}</th>
+                                <th>{$vo.describe}</th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="row"><div class="col-12">
+                                    <h5>array格式：</h5>
+                                    <pre>{:print_r($vo.val)}</pre>
+                                    </div></div>
+                                </td>
+                            </tr>
+                            <tr class="mb-5">
+                                <td colspan="2">
+                                    <div class="row"><div class="col-12">
+                                        <h5>json格式：</h5>
+
+                                        {:decodeUnicode(format_json($vo.val))}
+                                    </div></div>
+                                    <br><br>
+                                </td>
+                            </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </article>
+    <footer class="container">
+        {include file="public/footer"/}
+    </footer>
+
+</body>
+</html>

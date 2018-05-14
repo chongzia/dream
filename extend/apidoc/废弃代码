@@ -1,0 +1,120 @@
+
+
+
+// //处理pai错误内容部分的显示
+// private static function HandleFunctionApiError($action)
+// {
+// 	// 建立一个空数组
+// 	$data = [];
+// 	// 如果操作是参数 则单复制给变量list 准备处理
+// 	if ($action == 'param'){$num = 4;$list = self::$functionbase['@param'];}
+// 	// 如果操作是返回值 则单复制给变量list 准备处理
+// 	elseif($action == 'return') {$num = 3;$list = self::$functionbase['@return'];}
+// 	// 循环传入的参数
+// 	foreach ($list as $key => $val)
+// 	{
+// 		// 如果统计的结果不是特别重要
+// 	    if (count($val)!= $num)
+// 	    {
+// 	        // 异常数据存入 存入异常error内容中
+// 	        self::$functionbase['error'][] = implode(' ', $val);
+// 	        // 删除原有错误数据
+// 	        unset($key);
+// 	    }
+// 	    else
+// 	    {
+// 	        // 将内容存入数组中
+// 	        $data[] =$val;
+// 	    }
+// 	}
+// 	self::$functionbase['@'.$action.''] = $data;
+// }
+
+
+
+
+
+
+
+// 处理前置内容，从新整理键与值的内容
+private static function FunHandlePreContent()
+{
+    dump(self::$functionbase);die;
+    // 定义一个空变量数组
+    $data = [];
+    $data_num = [];
+    $data_str = [];
+    $i=0;
+    // 循环内容处理所有多余符号
+    foreach (self::$functionbase['apidoc'] as $key => $val)
+    {
+        // 匹配到注释内容
+        preg_match("/@[\w]*/i", $val, $res);
+        // 如果匹配结果存在
+        if (isset($res[0]))
+        {
+            if (in_array($res[0],self::$setFunctionAttribute))
+            {
+                if ($res[0] == '') $data[] = $val;
+                else
+                {
+                    // 否则替换字符串中正确结果名称内容为空，去除空格后复制给一个新的值
+                    $v = trim(str_replace($res[0],'',$val));
+                    // 如果值为空 将结果放入索引中
+                    if ($v == '')  $data[] = '@'.$res[0].'&nbsp;没有内容信息';
+                    else
+                    {
+                        // 如果遇到以下关键字，存入三维数组中
+                        if ($res[0] =='param' || $res[0] =='return') $data[$res[0]][] = $v;
+                        // 否则存入正常结果之中
+                        else $data[$res[0]] = $v;
+                    }
+                }
+            }
+        }
+    }
+
+    // 循环初次区分好的 数组
+    foreach ($data as $key => $val)
+    {
+        // 如果键是数字，则单独存放到一个数组
+        if (is_numeric($key)) $data_num[$key] = $val;
+        // 如果键是字符串，则单独存放到一个数组
+        if (is_string($key)) $data_str[$key] = $val;
+    }
+    // 正常数据 存入正常paidoc内容之中
+    self::$functionbase['apidoc'] = $data_str;
+    // 异常数据存入 存入异常error内容中
+    self::$functionbase['error'] = $data_num;
+    // 返回结果
+    return $data_str;
+}
+
+
+
+
+	private static function HandleFunctionApiReturn()
+	{
+		$data = [];
+		$list = self::$functionbase['@return'];
+		// 循环data数组，对里面的内容再次单独处理
+		foreach ($list as $key => $val)
+		{
+			foreach ($val as $k => $v)
+			{
+				// 如果内容为空 则删除该内容
+				if ($v == null) unset($list['@return'][$key][$k]);
+				// 如果内容是制表符则删除制表符
+				if (preg_match('/\t.*/', $v)) unset($list['@return'][$key][$k]);
+				// 如果内容为定义的数据类型中的一种，指定的type内容，
+				if (in_array($v,self::$setParameterType))  $data['@return'][$key]['type'] = $v;
+				// 如果内容为指定正则匹配的变量型内容时候
+				if (preg_match('/\$[\w].*/', $v)) $data['@return'][$key]['var'] = $v;
+				// // 如果内容为指定正则匹配的描述性内容时候
+				// if ($v == '必填' or $v == '选填') $data['@return'][$key]['mast'] = $v;
+				// 如果内容为制定截取的描述性内容时候
+				if (mb_substr($v,0,3) == '描述:') $data['@return'][$key]['describe'] = $v;
+			}
+		}
+		self::$functionbase['@return'] = $data['@return'];
+	}
